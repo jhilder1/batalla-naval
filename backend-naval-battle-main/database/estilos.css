@@ -1,0 +1,136 @@
+/* Estilo básico para la tabla */
+table {
+    border-collapse: collapse;
+    margin: 20px;
+}
+
+td {
+    width: 30px;
+    height: 30px;
+    border: 1px solid #000;
+    text-align: center;
+    cursor: pointer;
+}
+
+.barco {
+    background-color: #000;
+}
+
+.barco:hover {
+    background-color: #444;
+}
+
+/* Estilo para casillas disparadas */
+.acertado {
+    background-color: green;
+}
+
+.fallado {
+    background-color: red;
+}
+
+#inicio {
+    text-align: center;
+    margin-top: 20px;
+}
+
+#tableros, #turnoJugador {
+    text-align: center;
+    margin-top: 20px;
+}
+
+#tableros h2, #turnoJugador h2 {
+    margin-bottom: 20px;
+}
+
+#tableroJugador2 {
+    display: none;
+}
+.oculto {
+    display: none;
+}
+
+table {
+    border-collapse: collapse;
+}
+
+td {
+    width: 30px;
+    height: 30px;
+    border: 1px solid black;
+    text-align: center;
+}
+
+.barco {
+    background-color: gray;
+}
+
+.acertado {
+    background-color: red;
+}
+
+.fallado {
+    background-color: blue;
+}
+body{
+    background-color: #CEDEEA;
+    text-align: center;
+}
+#board{
+    width: 300px;
+    height: 300px;
+}
+.myRow{
+    width: 300px;
+    height: 30px;
+}
+.grid{
+    width: 30px;
+    height: 30px;
+    border: black 0.5px solid;
+    display: inline-block
+}
+.position{
+    display: inline-block;
+}
+.horizontal{
+    width: 35px;
+    height: 15px;
+    border: black 0.5px solid;
+}
+.vertical{
+    width: 15px;
+    height: 35px;
+    border: black 0.5px solid;
+    margin-top: 5px;
+}
+.selected{
+    background-color: blue;
+}
+.hit{
+    background-color: red;
+}
+.miss{
+    background-color: gray;
+}
+#barcosDisponibles .barco {
+    width: 50px;
+    height: 50px;
+    margin: 5px;
+    background-color: gray;
+    border: 1px solid black;
+    cursor: pointer;
+}
+
+#tableroJugador1 table td {
+    width: 50px;
+    height: 50px;
+    border: 1px solid black;
+    background-color: lightblue;
+    text-align: center;
+    vertical-align: middle;
+}
+
+.barco {
+    cursor: grab;
+}
