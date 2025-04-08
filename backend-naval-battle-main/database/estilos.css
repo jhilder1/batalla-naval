@@ -1,7 +1,16 @@
-/* Estilo básico para la tabla */
+/* ===== ESTILO GENERAL ===== */
+body {
+    background-color: #CEDEEA;
+    text-align: center;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+/* ===== TABLEROS Y CELDAS ===== */
 table {
     border-collapse: collapse;
-    margin: 20px;
+    margin: 20px auto;
 }
 
 td {
@@ -9,110 +18,58 @@ td {
     height: 30px;
     border: 1px solid #000;
     text-align: center;
+    vertical-align: middle;
     cursor: pointer;
+    background-color: lightblue;
 }
 
 .barco {
-    background-color: #000;
+    background-color: #1c9a10;
 }
 
 .barco:hover {
-    background-color: #444;
+    background-color: #2db520;
 }
 
-/* Estilo para casillas disparadas */
-.acertado {
-    background-color: green;
-}
-
-.fallado {
+.acertado, .hit {
     background-color: red;
 }
 
-#inicio {
-    text-align: center;
-    margin-top: 20px;
+.fallado, .miss {
+    background-color: gray;
 }
 
-#tableros, #turnoJugador {
-    text-align: center;
-    margin-top: 20px;
+.selected {
+    background-color: blue;
 }
 
-#tableros h2, #turnoJugador h2 {
+/* ===== ESTRUCTURA ===== */
+#inicio,
+#tableros,
+#turnoJugador {
+    margin-top: 20px;
+    text-align: center;
+}
+
+#tableros h2,
+#turnoJugador h2 {
     margin-bottom: 20px;
 }
 
-#tableroJugador2 {
+#tableroJugador2,
+.oculto,
+.hidden,
+.cuadro-clima {
     display: none;
 }
-.oculto {
-    display: none;
+
+#tableroJugador1 table td {
+    width: 50px;
+    height: 50px;
+    background-color: lightblue;
 }
 
-table {
-    border-collapse: collapse;
-}
-
-td {
-    width: 30px;
-    height: 30px;
-    border: 1px solid black;
-    text-align: center;
-}
-
-.barco {
-    background-color: gray;
-}
-
-.acertado {
-    background-color: red;
-}
-
-.fallado {
-    background-color: blue;
-}
-body{
-    background-color: #CEDEEA;
-    text-align: center;
-}
-#board{
-    width: 300px;
-    height: 300px;
-}
-.myRow{
-    width: 300px;
-    height: 30px;
-}
-.grid{
-    width: 30px;
-    height: 30px;
-    border: black 0.5px solid;
-    display: inline-block
-}
-.position{
-    display: inline-block;
-}
-.horizontal{
-    width: 35px;
-    height: 15px;
-    border: black 0.5px solid;
-}
-.vertical{
-    width: 15px;
-    height: 35px;
-    border: black 0.5px solid;
-    margin-top: 5px;
-}
-.selected{
-    background-color: blue;
-}
-.hit{
-    background-color: red;
-}
-.miss{
-    background-color: gray;
-}
+/* ===== BARCOS DISPONIBLES ===== */
 #barcosDisponibles .barco {
     width: 50px;
     height: 50px;
@@ -122,15 +79,100 @@ body{
     cursor: pointer;
 }
 
-#tableroJugador1 table td {
-    width: 50px;
-    height: 50px;
-    border: 1px solid black;
-    background-color: lightblue;
-    text-align: center;
-    vertical-align: middle;
+/* ===== GRILLAS PERSONALIZADAS ===== */
+#board {
+    width: 300px;
+    height: 300px;
 }
 
-.barco {
-    cursor: grab;
+.myRow {
+    width: 300px;
+    height: 30px;
+}
+
+.grid, .position {
+    width: 30px;
+    height: 30px;
+    border: 0.5px solid black;
+    display: inline-block;
+}
+
+.horizontal {
+    width: 35px;
+    height: 15px;
+    border: 0.5px solid black;
+}
+
+.vertical {
+    width: 15px;
+    height: 35px;
+    border: 0.5px solid black;
+    margin-top: 5px;
+}
+
+/* ===== CUADRO DE CLIMA ===== */
+.clima-container, .cuadro-clima {
+    position: absolute;
+    top: 100px;
+    left: 10px;
+    width: 200px;
+    padding: 15px;
+    background-color: #f0f8ff;
+    border: 2px solid #007acc;
+    border-radius: 10px;
+    font-size: 14px;
+    color: #333;
+    box-shadow: 2px 2px 10px rgba(0,0,0,0.1);
+    transition: all 0.3s ease;
+}
+
+.clima-container h3 {
+    margin-top: 0;
+    font-size: 16px;
+    color: #007acc;
+}
+
+/* ===== ESTILO RESPONSIVE ===== */
+@media (max-width: 768px) {
+    td {
+        width: 24px;
+        height: 24px;
+    }
+
+    #tableroJugador1 table td {
+        width: 30px;
+        height: 30px;
+    }
+
+    #barcosDisponibles .barco {
+        width: 40px;
+        height: 40px;
+    }
+
+    #tableros {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .clima-container {
+        position: static;
+        margin: 10px auto;
+        width: 90%;
+    }
+
+    #board {
+        width: 240px;
+        height: 240px;
+    }
+
+    .myRow {
+        width: 240px;
+        height: 24px;
+    }
+
+    .grid, .position {
+        width: 24px;
+        height: 24px;
+    }
 }
