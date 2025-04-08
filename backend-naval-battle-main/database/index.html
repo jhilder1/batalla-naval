@@ -9,17 +9,21 @@
 <body>
     <div id="inicio">
         <h2>Bienvenidos al juego de Batalla Naval</h2>
+        <input type="text" id="ciudad" placeholder="ciudad">
         <input type="text" id="nombreJugador1" placeholder="Nombre Jugador 1">
         <input type="text" id="nombreJugador2" placeholder="Nombre Jugador 2">
         <label for="tamanoTablero">Elige el tamaño del tablero</label>
-        <input type="range" id="tamanoTablero" min="10" max="20" value="15" step="5">
+        <input type="number" id="tamanoTablero" min="10" max="20" value="15" step="5">
+       
         <button onclick="iniciarJuego()">Iniciar Juego</button>
     </div>
-    <div id="barcos">
-        <div id="submarino" class="barco"  data-tipo="submarino"></div>
+    <div id="barcos" class="oculto">
+        <div id="submarino 2" class="barco"  data-tipo="submarino 2"></div>
         <div id="destructor" class="barco" data-tipo="destructor"></div>
         <div id="acorazado" class="barco"  data-tipo="acorazado"></div>
-        <div id="portaviones" class="barco"  data-tipo="portaviones"></div>
+        <div id="portaaviones" class="barco"  data-tipo="portaaviones"></div>
+        <div id="submarino 1" class="barco"  data-tipo="submarino 1"></div>
+        <div id="buque" class="barco"  data-tipo="buque"></div>
     </div>
     
     <!-- Tablero donde el jugador coloca los barcos -->
@@ -28,15 +32,17 @@
     </div>
     <div id="seleccionBarcos" class="oculto">
         <h2>Selecciona tu barco</h2>
-        <select id="tipoBarco">
-            <option value="submarino">Submarino</option>
+        <select id="tipoBarco" class="oculto">
+            <option value="portaaviones">Portaviones</option>
             <option value="destructor">Destructor</option>
             <option value="acorazado">Acorazado</option>
-            <option value="portaviones">Portaviones</option>
+            <option value="buque">Buque</option>
+            <option value="submarino 1">Submarino 1</option>
+            <option value="submarino 2">Submarino 2</option>
         </select>
         <button onclick="confirmarSeleccionBarco()">Confirmar Selección</button>
     </div>
-
+    <div id="cuadroClima" class="cuadro-clima"></div>
     <div id="tableros" class="oculto" >
         <h2>Coloca los barcos</h2>
         <p id="jugadorNombre"></p>
@@ -45,62 +51,18 @@
     </div>
 
     <div id="turnoJugador" class="oculto">
-        <h2>¡Es tu turno!</h2>
+        <h2></h2>
         <p id="jugadorTurnoNombre"></p>
         <div id="tableroDisparoJugador"></div>
         <p id="puntajeJugador1"></p>
         <p id="puntajeJugador2"></p>
     </div>
-<div id="Pbarcos" >
-    <h1>BattleShip</h1>
-    <h3>Selecciona la posición de tus naves</h3>
-    <div class="container">
-        <div class="row">
-            <div class="col">
-                <div id="board">
-                </div>
-            </div>
-            <div class="col">
-                <div id="boardAttack">
-                </div>
-            </div>
-        </div>
-        <h4>Tus naves:</h4>
-        <div id="ships" class="row">
-            <div class="col"> 
-                <div>
-                    <span>Portaviones</span></br>
-                    <span>Tamaño: 5</span>
-                </div>
-                <div class="position"></div>
-            </div>
-            <div class="col"> 
-                <div>
-                    <span>Acorazado</span></br>
-                    <span>Tamaño: 4</span>
-                </div>
-                <div class="position"></div>
-            </div>
-            <div class="col"> 
-                <div>
-                    <span>Submarino</span></br>
-                    <span>Tamaño: 3</span>
-                </div>
-                <div class="position"></div>
-            </div>
-            <div class="col"> 
-                <div>
-                    <span>Destructor</span></br>
-                    <span>Tamaño: 2</span>
-                </div>
-                <div class="position"></div>
-            </div>           
-        </div>
-</div>
+    
+
+
     <script src="batallaNaval.js"></script>
 </body>
 </html>
-
 
 
 
