@@ -1,11 +1,15 @@
-let totalBarcos=4;
-
+let totalBarcos=6;
+const puntajeMaximo=19;
 let tamañoTablero = 10;
 let barcosDisponibles = [
-    { tipo: 'portaaviones', tamaño: 4 },
-    { tipo: 'submarino', tamaño: 3 },
-    { tipo: 'destructor', tamaño: 2 },
-    { tipo: 'lancha', tamaño: 1 }
+    { tipo: 'portaaviones', tamaño: 5 },
+    { tipo: 'destructor', tamaño: 4 },
+    { tipo: 'acorazado', tamaño: 3 },
+    { tipo: 'buque', tamaño: 3 },
+    {tipo: 'submarino 1', tamaño:2},
+    {tipo: 'submarino 2', tamaño:2}
+
+
 ];
 let barcoSeleccionado = null;
 let jugadores = {
@@ -35,45 +39,42 @@ function seleccionarBarco(barco) {
     alert(`Has seleccionado el ${barco.tipo}`);
 }
 
-function crearTablero(jugadorNum) {
-    let contenedor = document.getElementById("tablero");
-    let tabla = document.createElement("table");
-    for (let i = 0; i < tamañoTablero; i++) {
-        let fila = document.createElement("tr");
-        for (let j = 0; j < tamañoTablero; j++) {
-            let celda = document.createElement("td");
-            celda.id = `${jugadorNum}-${i},${j}`; // ID único por jugador
-            celda.onclick = () => colocarBarco(jugadorNum, i, j);
-            if (jugadores[`jugador${jugadorNum}`].tablero[i][j] === 1) {
-                celda.classList.add("barco");
-            }
-            fila.appendChild(celda);
-        }
-        tabla.appendChild(fila);
-    }
-    contenedor.innerHTML = "";
-    contenedor.appendChild(tabla);
-}
+
 
 function colocarBarco(jugadorNum, i, j) {
-    let jugador = jugadores.jugador2;
-    let barcosColocados = 0;
+    // Solo permitir que el jugador 1 coloque manualmente
+    if (jugadorNum !== 1) {
+        alert("Solo el Jugador 1 puede colocar barcos manualmente.");
+        return;
+    }
 
-    
-  
-   
-   
     if (!barcoSeleccionado) {
         alert("Selecciona un barco primero");
         return;
     }
 
     let tamaño = barcoSeleccionado.tamaño;
+    let tipoBarco = barcoSeleccionado.tipo;
+
+    // Verificar si el barco ya fue colocado
+    if (jugadores[`jugador${jugadorNum}`].barcosColocados >= barcosDisponibles.length) {
+        alert("Ya colocaste todos tus barcos");
+        return;
+    }
+
+    // Verificar si el barco ya ha sido colocado previamente
+    if (jugadores[`jugador${jugadorNum}`].barcos.includes(tipoBarco)) {
+        alert("Este barco ya ha sido colocado");
+        return;
+    }
+
+    // Verificar si el barco cabe horizontalmente en el tablero
     if (j + tamaño > tamañoTablero) {
         alert("El barco no cabe aquí");
         return;
     }
 
+    // Verificar que no haya superposición con otro barco
     for (let k = 0; k < tamaño; k++) {
         if (jugadores[`jugador${jugadorNum}`].tablero[i][j + k] === 1) {
             alert("No puedes colocar un barco encima de otro");
@@ -81,38 +82,40 @@ function colocarBarco(jugadorNum, i, j) {
         }
     }
 
+    // Colocar el barco
     for (let k = 0; k < tamaño; k++) {
         jugadores[`jugador${jugadorNum}`].tablero[i][j + k] = 1;
-       
-        barcosColocados++;
     }
 
-    jugadores[`jugador${jugadorNum}`].barcosColocados++;  // Incrementar el contador de barcos colocados
-    
-    // Verificar si todos los barcos han sido colocados
+    // Agregar el barco al array de barcos colocados
+    jugadores[`jugador${jugadorNum}`].barcos.push(tipoBarco);
+    jugadores[`jugador${jugadorNum}`].barcosColocados++;
+
+    // Verificar si ya colocó todos los barcos
     if (jugadores[`jugador${jugadorNum}`].barcosColocados === barcosDisponibles.length) {
-        if (jugadorNum === 1) {
-            // Si es el turno del jugador 1, pasa al jugador 2
-            jugadorTurno === 2;
-            
-            
-         alert("Jugador 1 ha terminado de colocar sus barcos. Ahora es el turno de Jugador 2");
-            crearTablero(jugadorTurno);
-            colocarBarcosAutomaticamente();
-       
-        
-        } if (jugadores.jugador1.barcosColocados >= totalBarcos && jugadores.jugador2.barcosColocados < totalBarcos){
-            // Si es el turno del jugador 2, iniciar el juego
-            alert("Ambos jugadores han colocado sus barcos. ¡El juego empieza!");
-            
-        }
+        alert("Jugador 1 ha terminado de colocar sus barcos. Ahora es el turno de Jugador 2");
+
+        // Cambiar el turno
+        jugadorTurno = 2;
+
+        // Crear tablero y colocar barcos automáticamente para jugador 2
+        crearTablero(jugadorTurno);
+        mostrarClima();
+        document.getElementById("barcos").classList.add("oculto");
+        colocarBarcosAutomaticamente();
+
+        alert("Jugador 2 ha colocado sus barcos automáticamente. ¡El juego empieza!");
+        finalizarColocacion();
     }
-    
+
+    // Resetear la selección del barco
     barcoSeleccionado = null;
 }
 
 // Función para iniciar el juego
 function iniciarJuego() {
+   
+    document.getElementById("barcos").classList.remove("oculto");
     document.getElementById("tableros").style.display = "none";
     document.getElementById("turnoJugador").style.display = "block";
     document.getElementById("jugadorTurnoNombre").innerText = jugadores[`jugador${jugadorTurno}`].nombre;
@@ -169,7 +172,7 @@ function crearTablero(jugadorNum) {
     for (let i = 0; i < tamañoTablero; i++) {
         tableroHtml += "<tr>";
         for (let j = 0; j < tamañoTablero; j++) {
-            tableroHtml += `<td onclick="colocarBarco(${jugadorNum}, ${i}, ${j})"></td>`;
+            tableroHtml += `<td id="jugador${jugadorNum}-${i},${j}" onclick="colocarBarco(${jugadorNum}, ${i}, ${j})"></td>`;
         }
         tableroHtml += "</tr>";
     }
@@ -180,7 +183,7 @@ function crearTablero(jugadorNum) {
     } else {
         document.getElementById("tableroJugador2").innerHTML = tableroHtml;
     }
-}
+} 
 
 
 // Colocación automática de barcos para el jugador 2
@@ -196,7 +199,7 @@ function colocarBarcosAutomaticamente() {
             let i = Math.floor(Math.random() * tamañoTablero);
             let j = Math.floor(Math.random() * (tamañoTablero - barco.tamaño));
 
-            // Verificar si el barco cabe en la posición y no se solapan con otros barcos
+            // Verificar si el barco cabe y no se superpone
             let puedeColocar = true;
             for (let k = 0; k < barco.tamaño; k++) {
                 if (jugador.tablero[i][j + k] === 1) {
@@ -206,13 +209,19 @@ function colocarBarcosAutomaticamente() {
             }
 
             if (puedeColocar) {
-                // Colocar el barco en la posición seleccionada
+                // Colocar el barco
                 for (let k = 0; k < barco.tamaño; k++) {
                     jugador.tablero[i][j + k] = 1;
-                    // Asegúrate de colocar la celda correspondiente en el tablero visual del jugador 2
-                    document.getElementById(`2-${i},${j + k}`).classList.add("barco");
+
+                    // Agrega visualmente si el tablero del jugador 2 está visible
+                    const celda = document.getElementById(`jugador2-${i},${j + k}`);
+                    if (celda) {
+                        celda.classList.add("barco");
+                    }
                 }
+
                 barcosColocados++;
+                jugador.barcosColocados++; // <-- esto es importante
                 colocado = true;
             }
         }
@@ -272,35 +281,51 @@ function finalizarColocacion() {
         document.getElementById("jugadorTurnoNombre").innerText = jugadores.jugador1.nombre;
         actualizarPuntajes();  
         crearTableroDisparo(1);  
+        document.getElementById("miniTableros").style.display = "block";
+
+        document.getElementById("cuadroClima").classList.remove("hidden");
+        
+    
     }
 }
 
 // Crear tablero para disparar
 function crearTableroDisparo(jugadorNum) {
     let jugador = jugadores[`jugador${jugadorNum}`];
+    let oponenteNum = jugadorNum === 1 ? 2 : 1;
+    let oponente = jugadores[`jugador${oponenteNum}`];
     let tableroHtml = "<table>";
-    
+
     for (let i = 0; i < tamañoTablero; i++) {
         tableroHtml += "<tr>";
         for (let j = 0; j < tamañoTablero; j++) {
             let clase = "";
+            let contenido = "";
+
+            // Mostrar disparos realizados
             if (jugador.disparosRealizados[i] && jugador.disparosRealizados[i][j] === 'acertado') {
                 clase = "acertado";
+                contenido = "🔥";
             } else if (jugador.disparosRealizados[i] && jugador.disparosRealizados[i][j] === 'fallado') {
                 clase = "fallado";
+                contenido = "💦";
             }
-            tableroHtml += `<td class="${clase}" onclick="disparar(${i}, ${j})"></td>`;
+
+            // Mostrar barcos del oponente desde el inicio
+          /* if (oponente.tablero[i][j] === 1) {
+                clase += " barco";
+                contenido = "🚢"; // opcional
+            }*/
+
+            tableroHtml += `<td class="${clase}" onclick="disparar(${i}, ${j})">${contenido}</td>`;
         }
         tableroHtml += "</tr>";
     }
-    tableroHtml += "</table>";
 
-    if (jugadorNum === 1) {
-        document.getElementById("tableroDisparoJugador").innerHTML = tableroHtml;
-    } else {
-        document.getElementById("tableroDisparoJugador").innerHTML = tableroHtml;
-    }
+    tableroHtml += "</table>";
+    document.getElementById("tableroDisparoJugador").innerHTML = tableroHtml;
 }
+
 
 // Función para disparar
 function disparar(i, j) {
@@ -311,49 +336,73 @@ function disparar(i, j) {
         jugadorAtacante.disparosRealizados[i] = [];
     }
 
-    // Verificar si el jugador ya disparó a esa celda
     if (jugadorAtacante.disparosRealizados[i][j] !== undefined) {
         alert("Ya disparaste a esta celda. ¡Elige otra!");
         return;
     }
 
-    // Registrar disparo
     let acertado = false;
-    for (let barco of jugadorDefensor.barcos) {
-        if (barco.i === i && barco.j === j) {
-            jugadorDefensor.tablero[i][j] = 2;  // Barco hundido
-            jugadorAtacante.disparosRealizados[i][j] = 'acertado';
-            jugadorAtacante.puntuacion += barco.puntaje;
-            acertado = true;
-            break;
-        }
-    }
-
-    if (!acertado) {
+    if (jugadorDefensor.tablero[i][j] === 1) {
+        jugadorDefensor.tablero[i][j] = 2;  // Barco golpeado
+        jugadorAtacante.disparosRealizados[i][j] = 'acertado';
+        jugadorAtacante.puntuacion++;
+        acertado = true;
+        alert("¡Acertaste!");
+    } else {
         jugadorAtacante.disparosRealizados[i][j] = 'fallado';
         alert("Fallaste");
-    } else {
-        alert("¡Acertaste!");
     }
-
-    // Actualizar puntajes en tiempo real
+    
     actualizarPuntajes();
 
-    // Verificar si hay un ganador
-    if (jugadores.jugador1.puntuacion === totalBarcos *3) {
-        alert(`${jugadores.jugador1.nombre} ha ganado!`);
-        resetearJuego();
-    } else if (jugadores.jugador2.puntuacion === totalBarcos *3) {
-        alert(`${jugadores.jugador2.nombre} ha ganado!`);
-        resetearJuego();
-    } else {
-        // Cambiar turno
-        jugadorTurno = 3 - jugadorTurno;  // Cambiar entre 1 y 2
-        document.getElementById("jugadorTurnoNombre").innerText = jugadores[`jugador${jugadorTurno}`].nombre;
-        crearTableroDisparo(jugadorTurno); // Actualizar tablero de disparos
+    // Verificar victoria
+    if (verificarVictoria()) return;
+    
+
+    if (!acertado) {
+        // Solo cambia el turno si falló
+        jugadorTurno = 3 - jugadorTurno;
     }
+
+    document.getElementById("jugadorTurnoNombre").innerText = jugadores[`jugador${jugadorTurno}`].nombre;
+
+    // Actualizar el tablero solo si el turno cambió
+    crearTableroDisparo(jugadorTurno);
+
+    // Si ahora es el turno de la máquina, dispara (y sigue si acierta)
     if (jugadorTurno === 2) {
-        setTimeout(dispararAutomaticamente, 1000); // Retraso de 1 segundo para simular el turno del bot
+        setTimeout(dispararAutomaticamente, 1000);
+    }
+}
+
+    
+async function mostrarClima() {
+    const apiKey = '2638cfe4bcdcc9cb54c7d498061330a9'; 
+    let ciudad = document.getElementById('ciudad').value;
+    try {
+        const response = await fetch(
+            `https://api.openweathermap.org/data/2.5/weather?q=${ciudad}&appid=${apiKey}&units=metric&lang=es`
+        );
+
+        if (!response.ok) {
+            throw new Error("No se pudo obtener el clima");
+        }
+
+        const data = await response.json();
+
+        const climaHtml = `
+            <h3>🌤 Clima en ${data.name}</h3>
+            <p><strong>Temp:</strong> ${data.main.temp} °C</p>
+            <p><strong>Condición:</strong> ${data.weather[0].description}</p>
+            <p><strong>Humedad:</strong> ${data.main.humidity}%</p>
+            <p><strong>Viento:</strong> ${data.wind.speed} m/s</p>
+        `;
+
+        const contenedor = document.getElementById("cuadroClima");
+        contenedor.innerHTML = climaHtml;
+        contenedor.style.display = "block";
+    } catch (err) {
+        console.error("Error al mostrar el clima:", err.message);
     }
 }
 function dispararAutomaticamente() {
@@ -363,8 +412,110 @@ function dispararAutomaticamente() {
         j = Math.floor(Math.random() * tamañoTablero);
     } while (jugadores.jugador2.disparosRealizados[i] && jugadores.jugador2.disparosRealizados[i][j] !== undefined);
 
-    disparar(i, j);
+    let jugadorAtacante = jugadores.jugador2;
+    let jugadorDefensor = jugadores.jugador1;
+
+    if (!jugadorAtacante.disparosRealizados[i]) {
+        jugadorAtacante.disparosRealizados[i] = [];
+    }
+
+    let acertado = false;
+    if (jugadorDefensor.tablero[i][j] === 1) {
+        jugadorDefensor.tablero[i][j] = 2; // Barco golpeado
+        jugadorAtacante.disparosRealizados[i][j] = 'acertado';
+        jugadorAtacante.puntuacion++;
+        acertado = true;
+        alert(`La PC acertó en (${i}, ${j})`);
+    } else {
+        jugadorAtacante.disparosRealizados[i][j] = 'fallado';
+        alert(`La PC falló en (${i}, ${j})`);
+    }
+
+    actualizarPuntajes();
+    crearTableroDisparo(1); // 👈 Mostrar al jugador su tablero con disparos actualizados
+
+    // Verificar si alguien ganó
+    if (verificarVictoria()) return;
+
+    if (acertado) {
+        // Si acierta, sigue disparando
+        setTimeout(dispararAutomaticamente, 1000);
+    } else {
+        // Si falla, le pasa el turno al jugador
+        jugadorTurno = 1;
+        document.getElementById("jugadorTurnoNombre").innerText = jugadores.jugador1.nombre;
+        crearTableroDisparo(1);
+    }
 }
+
+function verificarVictoria() {
+    if (jugadores.jugador1.puntuacion >= puntajeMaximo) {
+        alert(`${jugadores.jugador1.nombre} ha ganado la partida!`);
+        exportarMapasFinales();
+        resetearJuego();
+        return true;
+    }
+    if (jugadores.jugador2.puntuacion >= puntajeMaximo) {
+        alert(`${jugadores.jugador2.nombre} ha ganado la partida!`);
+        exportarMapasFinales();
+        resetearJuego();
+        return true;
+    }
+    return false;
+}
+function exportarMapasFinales() {
+    const deseaDescargar = confirm("¿Deseas descargar los mapas finales de la partida?");
+    if (!deseaDescargar) return;
+
+    const tamaño = tamañoTablero; // asumimos que esta variable ya existe
+
+    function generarMatriz(jugadorNum) {
+        const jugador = jugadores[`jugador${jugadorNum}`];
+        const enemigo = jugadores[`jugador${jugadorNum === 1 ? 2 : 1}`];
+        const matriz = [];
+
+        for (let i = 0; i < tamaño; i++) {
+            matriz[i] = [];
+            for (let j = 0; j < tamaño; j++) {
+                let celda = 'a'; // Agua por defecto
+
+                // Barcos golpeados
+                if (jugador.tablero[i][j] === 2) {
+                    celda = `p${jugadorNum}-h`;
+                } else if (jugador.tablero[i][j] === 1) {
+                    celda = `p${jugadorNum}`;
+                }
+
+                // Tiros fallidos del oponente
+                if (enemigo.disparosRealizados[i] && enemigo.disparosRealizados[i][j] === 'fallado' && jugador.tablero[i][j] !== 1 && jugador.tablero[i][j] !== 2) {
+                    celda = 'b';
+                }
+
+                matriz[i][j] = celda;
+            }
+        }
+
+        return matriz;
+    }
+
+    function descargarMatriz(nombre, matriz) {
+        const contenido = matriz.map(fila => fila.join('\t')).join('\n');
+        const blob = new Blob([contenido], { type: 'text/plain' });
+        const enlace = document.createElement('a');
+        enlace.href = URL.createObjectURL(blob);
+        enlace.download = nombre;
+        document.body.appendChild(enlace);
+        enlace.click();
+        document.body.removeChild(enlace);
+    }
+
+    const matrizJ1 = generarMatriz(1);
+    const matrizJ2 = generarMatriz(2);
+
+    descargarMatriz("mapa_jugador1.txt", matrizJ1);
+    descargarMatriz("mapa_jugador2.txt", matrizJ2);
+}
+
 // Función para actualizar los puntajes en la pantalla
 function actualizarPuntajes() {
     document.getElementById("puntajeJugador1").innerText = `${jugadores.jugador1.nombre}: ${jugadores.jugador1.puntuacion}`;
@@ -375,4 +526,8 @@ function actualizarPuntajes() {
 function resetearJuego() {
     alert("El juego ha terminado.");
     document.location.reload();
+    function ocultarClima() {
+        document.getElementById("cuadroClima").classList.add("hidden");
+      }
 }
+
